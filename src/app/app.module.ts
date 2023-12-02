@@ -1,18 +1,32 @@
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { CustomTodoListComponent } from './components/custom-todo-list/custom-todo-list.component';
+import { MainViewComponent } from './view/main-view/main-view.component';
+import { PrimeNgModule } from './primeng.module';
+import { TodoItemComponent } from './components/todo-item/todo-item.component';
+import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
+
 @NgModule({
   declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
+    AppComponent,
+    CustomTodoListComponent,
+    MainViewComponent,
+    TodoItemComponent,
+    EditTodoComponent,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    PrimeNgModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

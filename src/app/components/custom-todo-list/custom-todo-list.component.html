@@ -1,0 +1,21 @@
+<span class="p-input-icon-left w-full">
+  <i class="pi pi-plus" aria-labelledby="new-todo-input"></i>
+
+  <input
+    type="text"
+    placeholder="Agregar un nuevo TODO"
+    [formControl]="newTodo"
+    [maxlength]="maxLength"
+    class="p-inputtext-sm w-full"
+    aria-label="new-todo-input"
+    pInputText
+    (blur)="todoInputBlur.next(true)"
+  />
+</span>
+
+<ul>
+  <app-todo-item
+    *ngFor="let todo of todoList; let i = index; trackBy: trackBy"
+    [todo]="todo"
+  ></app-todo-item>
+</ul>
