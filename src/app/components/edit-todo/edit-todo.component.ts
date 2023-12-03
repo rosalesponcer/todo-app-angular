@@ -14,6 +14,8 @@ import {
 })
 export class EditTodoComponent {
   TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
+
+  loading: boolean = false;
   private _destroy = new Subject();
 
   todoFormGroup: FormGroup = new FormGroup({
@@ -32,7 +34,20 @@ export class EditTodoComponent {
   submitHandler() {
     if (!this.todoFormGroup.valid) return;
 
-    this.todoSrv.updateTodo(this.todoFormGroup.value).subscribe();
+    this.loading = true;
+    this.todoSrv.updateTodo(this.todoFormGroup.value).subscribe({
+      complete: () => {
+        this.loading = false;
+      },
+    });
+  }
+
+  deleteTodo() {
+    const { _id } = this.todoFormGroup.value;
+
+    if (!_id) return;
+
+    this.todoSrv.deleteTodo(_id).subscribe();
   }
 
   private _initSelectTodoListener() {
@@ -41,7 +56,7 @@ export class EditTodoComponent {
       filter(Boolean),
       tap((todo) => {
         this.todoFormGroup = new FormGroup({
-          id: new FormControl(todo.id),
+          _id: new FormControl(todo._id),
           title: getTodoTitleFormControl(todo.title),
           description: new FormControl(todo.description),
         });

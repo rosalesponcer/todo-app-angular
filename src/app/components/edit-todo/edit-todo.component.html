@@ -47,11 +47,13 @@
           label="Eliminar"
           class="flex-1"
           styleClass="p-button-danger w-full"
+          (onClick)="deleteTodo()"
         ></p-button>
 
         <p-button
           type="submit"
           [disabled]="!todoFormGroup.valid"
+          [loading]="loading"
           label="Guardar"
           class="flex-1"
           styleClass="w-full"

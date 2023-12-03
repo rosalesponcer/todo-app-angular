@@ -32,7 +32,7 @@ export class CustomTodoListComponent {
   }
 
   trackBy(index: number, todo: Todo): string {
-    return todo.id;
+    return todo._id;
   }
 
   private _initInputBlurValuechanges() {
@@ -52,15 +52,13 @@ export class CustomTodoListComponent {
   }
 
   private _getTodos() {
-    this.todoSrv.getTodos().subscribe((res) => {
-      this.todoList = [...res];
-    });
+    this.todoSrv.getTodos().subscribe();
   }
 
   private _saveNewTodo(title: string) {
     this.todoSrv.saveTodo({ title, description: '' }).subscribe(() => {
       this.newTodo.reset();
-      this._getTodos();
+      // this._getTodos();
     });
   }
 }

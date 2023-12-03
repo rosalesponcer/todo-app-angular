@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,6 +27,7 @@ import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
     PrimeNgModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
   bootstrap: [AppComponent],
 })

@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, of, tap } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 
 export interface Todo {
-  id: string;
+  _id: string;
   title: string;
   completed?: boolean;
   description: string;
@@ -14,10 +16,15 @@ const TODO_KEY = 'TODO_KEY';
   providedIn: 'root',
 })
 export class TodoService {
+  END_POINT = `${environment.baseUrl}/todos`;
+
   selectedTodo = new BehaviorSubject<Todo | undefined>(undefined);
   selectedTodo$ = this.selectedTodo.asObservable();
 
-  constructor() {}
+  currentTodos = new BehaviorSubject<Todo[]>([]);
+  currentTodos$ = this.currentTodos.asObservable();
+
+  constructor(private _httpSrv: HttpClient) {}
 
   setSelectedTodo(todo?: Todo) {
     this.selectedTodo.next(todo);
@@ -28,32 +35,31 @@ export class TodoService {
   }
 
   getTodos(): Observable<Todo[]> {
-    const todosString = localStorage.getItem(TODO_KEY);
+    return this._httpSrv.get<Todo[]>(this.END_POINT).pipe(
+      tap((todos) => {
+        this.currentTodos.next(todos);
+      })
+    );
 
-    if (!todosString) return of([]);
+    // const todosString = localStorage.getItem(TODO_KEY);
 
-    const todoObject = JSON.parse(todosString) ?? [];
+    // if (!todosString) return of([]);
 
-    return of(todoObject);
+    // const todoObject = JSON.parse(todosString) ?? [];
+
+    // return of(todoObject);
   }
 
   saveTodo(todo: Partial<Todo>) {
     if (!todo.title) throw 'NO TITLE';
 
-    const id = crypto.randomUUID();
+    const todos = this.currentTodos.value;
 
-    return this.getTodos().pipe(
-      map((todos) => {
-        const newTodo = {
-          ...todo,
-          id,
-        } as Todo;
-
+    return this._httpSrv.post<Todo>(this.END_POINT, todo).pipe(
+      tap((newTodo) => {
         todos.unshift(newTodo);
 
-        localStorage.setItem(TODO_KEY, JSON.stringify(todos));
-
-        return newTodo;
+        this.currentTodos.next([...todos]);
       })
     );
   }
@@ -61,19 +67,38 @@ export class TodoService {
   updateTodo(newTodo: Partial<Todo>): Observable<Todo | null> {
     if (!newTodo) return of();
 
-    return this.getTodos().pipe(
-      map((todos) => {
-        console.log('updateTodo');
+    return this._httpSrv.put<Todo>(this.END_POINT, newTodo).pipe(
+      map((todo) => {
+        const todos = this.currentTodos.value;
 
-        let findIndex = todos.findIndex((todo) => newTodo.id === todo.id);
+        const index = todos.findIndex(({ _id }) => _id === todo._id);
 
-        if (findIndex === -1) return null;
+        if (index === -1) return null;
 
-        todos[findIndex] = { ...todos[findIndex], ...newTodo };
+        todos[index] = todo;
 
-        localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        this.currentTodos.next([...todos]);
 
-        return { ...todos[findIndex] };
+        return todo;
+      })
+    );
+  }
+
+  deleteTodo(_id: string) {
+    return this._httpSrv.delete(`${this.END_POINT}?_id=${_id}`).pipe(
+      tap(() => {
+        const todos = [...this.currentTodos.value];
+        const findIndex = todos.findIndex((todo) => todo._id === _id);
+
+        if (findIndex === -1) return;
+
+        todos.splice(findIndex, 1);
+
+        if (this.selectedTodo.value?._id === _id) {
+          this.selectedTodo.next(undefined);
+        }
+
+        this.currentTodos.next([...todos]);
       })
     );
   }
