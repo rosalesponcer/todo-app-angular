@@ -8,6 +8,7 @@ export interface Todo {
   title: string;
   completed?: boolean;
   description: string;
+  date: string;
 }
 
 const TODO_KEY = 'TODO_KEY';
@@ -40,14 +41,6 @@ export class TodoService {
         this.currentTodos.next(todos);
       })
     );
-
-    // const todosString = localStorage.getItem(TODO_KEY);
-
-    // if (!todosString) return of([]);
-
-    // const todoObject = JSON.parse(todosString) ?? [];
-
-    // return of(todoObject);
   }
 
   saveTodo(todo: Partial<Todo>) {
@@ -99,6 +92,14 @@ export class TodoService {
         }
 
         this.currentTodos.next([...todos]);
+      })
+    );
+  }
+
+  getElementById(_id: string) {
+    return this._httpSrv.get<Todo>(`${this.END_POINT}/${_id}`).pipe(
+      tap((res) => {
+        this.setSelectedTodo(res);
       })
     );
   }

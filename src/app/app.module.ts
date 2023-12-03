@@ -11,6 +11,7 @@ import { MainViewComponent } from './view/main-view/main-view.component';
 import { PrimeNgModule } from './primeng.module';
 import { TodoItemComponent } from './components/todo-item/todo-item.component';
 import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
+import { EditViewComponent } from './view/edit-view/edit-view.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
     MainViewComponent,
     TodoItemComponent,
     EditTodoComponent,
+    EditViewComponent,
   ],
   providers: [],
   imports: [

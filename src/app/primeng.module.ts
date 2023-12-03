@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DialogModule } from 'primeng/dialog';
+import { CalendarModule } from 'primeng/calendar';
 
 const LIST = [
   ButtonModule,
@@ -12,6 +13,7 @@ const LIST = [
   CheckboxModule,
   InputTextareaModule,
   DialogModule,
+  CalendarModule,
 ];
 
 @NgModule({

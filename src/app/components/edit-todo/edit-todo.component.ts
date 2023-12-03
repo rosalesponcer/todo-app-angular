@@ -1,6 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TodoService } from '../../services/todo.service';
-import { Subject, filter, takeUntil, tap } from 'rxjs';
+import {
+  Subject,
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   TITLE_MAX_LENGTH,
@@ -13,17 +21,31 @@ import {
   styleUrls: ['./edit-todo.component.scss'],
 })
 export class EditTodoComponent {
+  @Input() fullWidth: boolean = false;
   TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
-
+  minDate = new Date();
+  value: string = '';
   loading: boolean = false;
   private _destroy = new Subject();
 
   todoFormGroup: FormGroup = new FormGroup({
     title: getTodoTitleFormControl(),
+    description: new FormControl(''),
+    dateControl: new FormControl(''),
+    date: new FormControl(''),
+    _id: new FormControl(''),
   });
+
+  private _dateFormatter = new Intl.DateTimeFormat('en-US');
+
+  dateFormControl = new FormControl('');
 
   constructor(public todoSrv: TodoService) {
     this._initSelectTodoListener().subscribe();
+
+    this._dateListener().subscribe();
+
+    this.minDate = this._getMinDay();
   }
 
   ngOnDestroy(): void {
@@ -35,7 +57,11 @@ export class EditTodoComponent {
     if (!this.todoFormGroup.valid) return;
 
     this.loading = true;
-    this.todoSrv.updateTodo(this.todoFormGroup.value).subscribe({
+
+    const formValue = { ...this.todoFormGroup.value };
+    delete formValue.dateControl;
+
+    this.todoSrv.updateTodo(formValue).subscribe({
       complete: () => {
         this.loading = false;
       },
@@ -50,17 +76,58 @@ export class EditTodoComponent {
     this.todoSrv.deleteTodo(_id).subscribe();
   }
 
+  private _dateListener() {
+    return this.todoFormGroup.get('dateControl')!.valueChanges.pipe(
+      takeUntil(this._destroy),
+      tap((res) => console.log('_dateListener', res)),
+      map((date) => {
+        return date ? this._dateFormatter.format(date as Date) : '';
+      }),
+      startWith(''),
+      distinctUntilChanged(),
+      tap((res) => {
+        this.todoFormGroup.get('date')!.setValue(res);
+      })
+    );
+  }
+
   private _initSelectTodoListener() {
     return this.todoSrv.selectedTodo$.pipe(
       takeUntil(this._destroy),
       filter(Boolean),
       tap((todo) => {
-        this.todoFormGroup = new FormGroup({
-          _id: new FormControl(todo._id),
-          title: getTodoTitleFormControl(todo.title),
-          description: new FormControl(todo.description),
+        this.todoFormGroup.patchValue({
+          _id: todo._id,
+          title: todo.title,
+          description: todo.description,
+          date: todo.date,
+          dateControl: todo.date ? new Date(todo.date) : '',
         });
       })
     );
+  }
+
+  private _getMinDay() {
+    let actualDate = new Date();
+
+    // Restar un día a la fecha actual
+    actualDate.setDate(actualDate.getDate() - 1);
+
+    // Obtener el año, mes y día por separado
+    let year = actualDate.getFullYear();
+    let month = actualDate.getMonth() + 1; // ¡Recuerda que los meses comienzan desde 0!
+    let day = actualDate.getDate();
+
+    // Formatear la fecha como desees (por ejemplo, como una cadena YYYY-MM-DD)
+    let berofeDay =
+      (month < 10 ? '0' : '') +
+      month +
+      '/' +
+      (day < 10 ? '0' : '') +
+      day +
+      '/' +
+      year;
+
+    return new Date(berofeDay);
   }
 }
