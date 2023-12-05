@@ -19,6 +19,7 @@ Este proyecto contiene una aplicación completa desarrollada en Angular, centrad
 
 ##  Capturas de pantallas:
 ![image](https://github.com/rosalesponcerdev/todo-app-angular/assets/44475922/5cce5f8f-88d9-4e73-8622-f71c213a851c)
+![image](https://github.com/rosalesponcerdev/todo-app-angular/assets/44475922/1ad02f7a-2cc5-4cf2-b1d4-7c7fc94e46e4)
 ![image](https://github.com/rosalesponcerdev/todo-app-angular/assets/44475922/1858c838-9d0c-4004-8c46-2ce256c1dbd1)
 ![image](https://github.com/rosalesponcerdev/todo-app-angular/assets/44475922/b8e81888-6eba-4c67-bb53-80d024eab498)
 ![image](https://github.com/rosalesponcerdev/todo-app-angular/assets/44475922/dd6741eb-ceac-46f8-a65b-e16d795409b4)
