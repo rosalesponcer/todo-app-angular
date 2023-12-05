@@ -6,11 +6,8 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
-  of,
-  startWith,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
 
 @Component({

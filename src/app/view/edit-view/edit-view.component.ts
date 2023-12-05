@@ -19,6 +19,10 @@ export class EditViewComponent {
 
     if (!_id) this._router.navigate(['/']);
 
-    this._todoSrv.getElementById(_id).subscribe();
+    this._todoSrv.getElementById(_id).subscribe({
+      error: () => {
+        this._router.navigate(['']);
+      },
+    });
   }
 }

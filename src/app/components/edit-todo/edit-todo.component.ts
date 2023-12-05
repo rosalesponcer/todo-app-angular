@@ -9,11 +9,12 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import {
   TITLE_MAX_LENGTH,
   getTodoTitleFormControl,
 } from '../../common/forms/todo.forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-todo',
@@ -28,19 +29,22 @@ export class EditTodoComponent {
   loading: boolean = false;
   private _destroy = new Subject();
 
+  color = '';
+
   todoFormGroup: FormGroup = new FormGroup({
     title: getTodoTitleFormControl(),
     description: new FormControl(''),
     dateControl: new FormControl(''),
     date: new FormControl(''),
     _id: new FormControl(''),
+    color: new FormControl(),
   });
 
   private _dateFormatter = new Intl.DateTimeFormat('en-US');
 
   dateFormControl = new FormControl('');
 
-  constructor(public todoSrv: TodoService) {
+  constructor(public todoSrv: TodoService, private _router: Router) {
     this._initSelectTodoListener().subscribe();
 
     this._dateListener().subscribe();
@@ -76,6 +80,14 @@ export class EditTodoComponent {
     this.todoSrv.deleteTodo(_id).subscribe();
   }
 
+  navigateToFull() {
+    this._router.navigate(['/edit', {}, this.todoFormGroup.value._id]);
+  }
+
+  back() {
+    this._router.navigate(['']);
+  }
+
   private _dateListener() {
     return this.todoFormGroup.get('dateControl')!.valueChanges.pipe(
       takeUntil(this._destroy),
@@ -102,6 +114,7 @@ export class EditTodoComponent {
           description: todo.description,
           date: todo.date,
           dateControl: todo.date ? new Date(todo.date) : '',
+          color: todo.color ?? '',
         });
       })
     );

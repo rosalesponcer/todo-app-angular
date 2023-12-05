@@ -3,7 +3,7 @@
 >
   <div
     *ngIf="context.selectedTodo"
-    class="w-full bg-red-600 p-4"
+    class="w-full p-4"
     [ngClass]="{
       'min-w-[500px]': !fullWidth,
       'max-w-2xl': !fullWidth
@@ -14,7 +14,21 @@
       [formGroup]="todoFormGroup"
       (submit)="submitHandler()"
     >
+      <div *ngIf="fullWidth" class="flex justify-end">
+        <p-button
+          icon="pi pi-arrow-left"
+          styleClass="p-button-rounded p-button-secondary p-button-text"
+          (onClick)="back()"
+        ></p-button>
+      </div>
+
       <div *ngIf="!fullWidth" class="flex justify-end">
+        <p-button
+          icon="pi pi-arrows-h"
+          styleClass="p-button-rounded p-button-secondary p-button-text"
+          (onClick)="navigateToFull()"
+        ></p-button>
+
         <p-button
           icon="pi pi-times"
           styleClass="p-button-rounded p-button-secondary p-button-text"
@@ -22,9 +36,10 @@
         ></p-button>
       </div>
 
-      <h1 class="font-bold text-2xl">TODO:</h1>
+      <h1 class="font-bold text-2xl mb-5">TODO:</h1>
 
       <div class="my-2">
+        <label class="font-bold">Título</label>
         <input
           type="text"
           pInputText
@@ -36,6 +51,7 @@
       </div>
 
       <div class="my-2">
+        <label class="font-bold">Fecha de inicio</label>
         <p-calendar
           formControlName="dateControl"
           styleClass="w-full"
@@ -46,6 +62,14 @@
       </div>
 
       <div class="my-2">
+        <label class="font-bold block">Color</label>
+
+        <p-colorPicker formControlName="color"></p-colorPicker>
+      </div>
+
+      <div class="my-2">
+        <label class="font-bold">Descripción</label>
+
         <textarea
           formControlName="description"
           rows="5"

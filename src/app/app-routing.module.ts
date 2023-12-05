@@ -10,8 +10,12 @@ const routes: Routes = [
     component: MainViewComponent,
   },
   {
-    path: ':_id',
+    path: 'edit/:_id',
     component: EditViewComponent,
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];
 

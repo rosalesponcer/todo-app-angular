@@ -9,6 +9,7 @@ export interface Todo {
   completed?: boolean;
   description: string;
   date: string;
+  color: string;
 }
 
 const TODO_KEY = 'TODO_KEY';

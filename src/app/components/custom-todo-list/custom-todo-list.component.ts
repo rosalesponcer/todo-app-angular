@@ -56,9 +56,11 @@ export class CustomTodoListComponent {
   }
 
   private _saveNewTodo(title: string) {
-    this.todoSrv.saveTodo({ title, description: '' }).subscribe(() => {
-      this.newTodo.reset();
-      // this._getTodos();
-    });
+    this.todoSrv
+      .saveTodo({ title, description: '', color: '#ffffff' })
+      .subscribe(() => {
+        this.newTodo.reset();
+        // this._getTodos();
+      });
   }
 }
